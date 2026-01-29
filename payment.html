@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TONPAY Confirmation</title>
+    <style>
+        :root {
+            --bg-deep: #0b0e11;
+            --card-bg: #161c23;
+            --ton-blue: #0098ea;
+            --ton-blue-hover: #00a9ff;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-dim: #848e9c;
+        }
+
+        /* Запрет копирования и выделения на всех устройствах */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-user-select: none; /* iOS Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE10+ */
+            user-select: none;         /* Standard */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-deep);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Шапка: логотип увеличен */
+        header {
+            padding: 22px 24px; /* Немного увеличили отступы для баланса */
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 14, 17, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-logo {
+            font-size: 26px; /* Увеличено на ~1 см в зависимости от экрана */
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Контейнер */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 40px 24px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .status-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(0, 152, 234, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 24px;
+        }
+
+        /* Анимация галочки */
+        .animate-check {
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 10px;
+            font-weight: 600;
+        }
+
+        .desc {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 28px;
+        }
+
+        .amount-display {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .amount-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #fff;
+            display: block;
+        }
+
+        .amount-ticker {
+            font-size: 14px;
+            color: var(--ton-blue);
+            font-weight: 600;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--ton-blue);
+            color: white;
+            border: none;
+            padding: 18px 20px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 152, 234, 0.2);
+        }
+
+        .btn:hover { background: var(--ton-blue-hover); }
+        .btn:active { transform: scale(0.97); }
+
+        .loader {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 2.5px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .legal {
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 1.8;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-logo"><span>🌐</span> TONPAY</div>
+    </header>
+
+    <div class="main-content">
+        <div id="screen-1" class="card">
+            <div class="status-icon">💸</div>
+            <h1>Входящий платеж</h1>
+            <p class="desc">Проверьте детали транзакции перед зачислением</p>
+            
+            <div class="amount-display">
+                <span class="amount-value">5.00</span>
+                <span class="amount-ticker">TON COIN</span>
+            </div>
+
+            <button class="btn" onclick="runProcess(this)">
+                <span id="label">Подтвердить зачисление</span>
+                <div class="loader" id="loader"></div>
+            </button>
+        </div>
+
+        <div id="screen-2" class="card hidden">
+            <div class="status-icon animate-check" style="background: rgba(0, 200, 83, 0.1);">✅</div>
+            <h1>Готово!</h1>
+            <p class="desc">Средства успешно зачислены на ваш кошелек</p>
+            
+            <div class="amount-display">
+                <span class="amount-value" style="color: #00c853;">+ 5.00</span>
+                <span class="amount-ticker" style="color: #00c853;">SUCCESS</span>
+            </div>
+
+            <a href="https://tonkeeper.com/" class="btn">На сайт банка →</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="legal">
+            Official Payment Gateway<br>
+            TONPAY Ltd. by TonKeeper © 2026<br>
+            Licensed & Secured by TON Blockchain
+        </div>
+    </footer>
+
+    <script>
+        function runProcess(btn) {
+            const label = document.getElementById('label');
+            const loader = document.getElementById('loader');
+            
+            label.classList.add('hidden');
+            loader.style.display = 'block';
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                document.getElementById('screen-1').classList.add('hidden');
+                document.getElementById('screen-2').classList.remove('hidden');
+            }, 2400);
+        }
+    </script>
+
+</body>
+</html>
