@@ -12,16 +12,16 @@
             --ton-blue-hover: #00a9ff;
             --border-color: rgba(255, 255, 255, 0.08);
             --text-dim: #848e9c;
+            --yellow: #ffd54f;
+            --green: #00c853;
         }
 
-        /* Запрет копирования и выделения на всех устройствах */
+        /* Запрет копирования и выделения */
         * { 
             box-sizing: border-box; 
             -webkit-tap-highlight-color: transparent; 
-            -webkit-user-select: none; /* iOS Safari */
-            -moz-user-select: none;    /* Firefox */
-            -ms-user-select: none;     /* IE10+ */
-            user-select: none;         /* Standard */
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -33,11 +33,11 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* Шапка: логотип увеличен */
         header {
-            padding: 22px 24px; /* Немного увеличили отступы для баланса */
+            padding: 22px 24px;
             display: flex;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
@@ -45,11 +45,11 @@
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100; /* Выше модалки */
         }
 
         .header-logo {
-            font-size: 26px; /* Увеличено на ~1 см в зависимости от экрана */
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: 0.5px;
             display: flex;
@@ -57,13 +57,13 @@
             gap: 10px;
         }
 
-        /* Контейнер */
         .main-content {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: filter 0.3s ease;
         }
 
         .card {
@@ -89,7 +89,6 @@
             margin: 0 auto 24px;
         }
 
-        /* Анимация галочки */
         .animate-check {
             animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
@@ -99,17 +98,8 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        h1 {
-            font-size: 20px;
-            margin: 0 0 10px;
-            font-weight: 600;
-        }
-
-        .desc {
-            font-size: 14px;
-            color: var(--text-dim);
-            margin-bottom: 28px;
-        }
+        h1 { font-size: 20px; margin: 0 0 10px; font-weight: 600; }
+        .desc { font-size: 14px; color: var(--text-dim); margin-bottom: 28px; }
 
         .amount-display {
             background: rgba(255, 255, 255, 0.03);
@@ -118,20 +108,8 @@
             margin-bottom: 32px;
         }
 
-        .amount-value {
-            font-size: 36px;
-            font-weight: 800;
-            color: #fff;
-            display: block;
-        }
-
-        .amount-ticker {
-            font-size: 14px;
-            color: var(--ton-blue);
-            font-weight: 600;
-            margin-top: 4px;
-            display: block;
-        }
+        .amount-value { font-size: 36px; font-weight: 800; color: #fff; display: block; }
+        .amount-ticker { font-size: 14px; color: var(--ton-blue); font-weight: 600; margin-top: 4px; display: block; }
 
         .btn {
             display: block;
@@ -147,15 +125,95 @@
             text-decoration: none;
             transition: all 0.2s ease;
             box-shadow: 0 4px 15px rgba(0, 152, 234, 0.2);
+            margin-bottom: 15px;
         }
 
-        .btn:hover { background: var(--ton-blue-hover); }
         .btn:active { transform: scale(0.97); }
+
+        /* Ссылка О транзакции */
+        .info-link {
+            color: var(--ton-blue);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 340px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            position: relative;
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .modal-section { margin-bottom: 20px; text-align: center; }
+        .modal-label { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; display: block;}
+        
+        .pill {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-family: monospace;
+            border: 1px solid var(--border-color);
+        }
+
+        .icon-circle {
+            width: 24px; height: 24px;
+            background: var(--ton-blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+        }
+
+        .status-text { font-weight: 700; }
+        .status-waiting { color: var(--yellow); }
+        .status-done { color: var(--green); }
 
         .loader {
             display: none;
-            width: 22px;
-            height: 22px;
+            width: 22px; height: 22px;
             border: 2.5px solid rgba(255,255,255,0.2);
             border-radius: 50%;
             border-top-color: #fff;
@@ -165,19 +223,8 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        footer {
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .legal {
-            font-size: 11px;
-            color: var(--text-dim);
-            line-height: 1.8;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-        }
-
+        footer { padding: 30px 20px; text-align: center; }
+        .legal { font-size: 11px; color: var(--text-dim); line-height: 1.8; letter-spacing: 0.8px; text-transform: uppercase; }
         .hidden { display: none; }
     </style>
 </head>
@@ -187,34 +234,67 @@
         <div class="header-logo"><span>🌐</span> TONPAY</div>
     </header>
 
-    <div class="main-content">
+    <div class="main-content" id="main-content">
         <div id="screen-1" class="card">
             <div class="status-icon">💸</div>
             <h1>Входящий платеж</h1>
             <p class="desc">Проверьте детали транзакции перед зачислением</p>
-            
             <div class="amount-display">
                 <span class="amount-value">5.00</span>
                 <span class="amount-ticker">TON COIN</span>
             </div>
-
             <button class="btn" onclick="runProcess(this)">
                 <span id="label">Подтвердить зачисление</span>
                 <div class="loader" id="loader"></div>
             </button>
+            <div class="info-link" onclick="toggleModal(true)">О Транзакции</div>
         </div>
 
         <div id="screen-2" class="card hidden">
             <div class="status-icon animate-check" style="background: rgba(0, 200, 83, 0.1);">✅</div>
             <h1>Готово!</h1>
             <p class="desc">Средства успешно зачислены на ваш кошелек</p>
-            
             <div class="amount-display">
                 <span class="amount-value" style="color: #00c853;">+ 5.00</span>
                 <span class="amount-ticker" style="color: #00c853;">SUCCESS</span>
             </div>
-
             <a href="https://tonkeeper.com/" class="btn">На сайт банка →</a>
+            <div class="info-link" onclick="toggleModal(true)">О Транзакции</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay" onclick="if(event.target === this) toggleModal(false)">
+        <div class="modal">
+            <div class="modal-header">
+                <span>ℹ️ О Транзакции</span>
+                <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+            </div>
+            
+            <div class="modal-section">
+                <span class="modal-label">От кого:</span>
+                <div class="pill">
+                    <div class="icon-circle">🏦</div>
+                    UQCCYdZP...ooH_4b
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <span class="modal-label">Получатель:</span>
+                <div class="pill">
+                    <div class="icon-circle">🏦</div>
+                    Ваш кошелёк
+                </div>
+            </div>
+
+            <div class="modal-section" style="margin-top: 30px;">
+                <span class="modal-label">Состояние сделки:</span>
+                <span id="status-val" class="status-text status-waiting">В ожидании..</span>
+            </div>
+
+            <div class="modal-section">
+                <span class="modal-label">Сумма:</span>
+                <span style="font-weight: 700; font-size: 18px;">5.00 TON</span>
+            </div>
         </div>
     </div>
 
@@ -227,9 +307,17 @@
     </footer>
 
     <script>
+        function toggleModal(show) {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('main-content');
+            overlay.style.display = show ? 'flex' : 'none';
+            content.style.filter = show ? 'blur(8px)' : 'none';
+        }
+
         function runProcess(btn) {
             const label = document.getElementById('label');
             const loader = document.getElementById('loader');
+            const statusVal = document.getElementById('status-val');
             
             label.classList.add('hidden');
             loader.style.display = 'block';
@@ -237,11 +325,15 @@
             btn.style.opacity = '0.7';
 
             setTimeout(() => {
+                // Смена состояния в модалке
+                statusVal.innerText = "Завершено! ✅";
+                statusVal.classList.remove('status-waiting');
+                statusVal.classList.add('status-done');
+
                 document.getElementById('screen-1').classList.add('hidden');
                 document.getElementById('screen-2').classList.remove('hidden');
             }, 2400);
         }
     </script>
-
 </body>
 </html>
